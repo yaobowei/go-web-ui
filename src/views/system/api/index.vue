@@ -2,58 +2,65 @@
   <div>
     <el-card class="container-card" shadow="always">
       <el-form size="mini" :inline="true" :model="params" class="demo-form-inline">
-        <el-form-item label="访问路径">
-          <el-input v-model.trim="params.path" clearable placeholder="访问路径" @clear="search" />
-        </el-form-item>
-        <el-form-item label="所属类别">
-          <el-input v-model.trim="params.category" clearable placeholder="所属类别" @clear="search" />
-        </el-form-item>
-        <el-form-item label="请求方法">
-          <el-select v-model.trim="params.method" clearable placeholder="请求方式" @change="search" @clear="search">
-            <el-option label="GET[获取资源]" value="GET" />
-            <el-option label="POST[新增资源]" value="POST" />
-            <el-option label="PUT[全部更新]" value="PUT" />
-            <el-option label="PATCH[增量更新]" value="PATCH" />
-            <el-option label="DELETE[删除资源]" value="DELETE" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="创建人">
-          <el-input v-model.trim="params.creator" clearable placeholder="创建人" @clear="search" />
-        </el-form-item>
-        <el-form-item>
-          <el-button :loading="loading" icon="el-icon-search" type="primary" @click="search">查询</el-button>
-        </el-form-item>
+        <!--        <el-form-item label="访问路径">-->
+        <!--          <el-input v-model.trim="params.path" clearable placeholder="访问路径" @clear="search" />-->
+        <!--        </el-form-item>-->
+        <!--        <el-form-item label="所属类别">-->
+        <!--          <el-input v-model.trim="params.category" clearable placeholder="所属类别" @clear="search" />-->
+        <!--        </el-form-item>-->
+        <!--        <el-form-item label="请求方法">-->
+        <!--          <el-select v-model.trim="params.method" clearable placeholder="请求方式" @change="search" @clear="search">-->
+        <!--            <el-option label="GET[获取资源]" value="GET" />-->
+        <!--            <el-option label="POST[新增资源]" value="POST" />-->
+        <!--            <el-option label="PUT[全部更新]" value="PUT" />-->
+        <!--            <el-option label="PATCH[增量更新]" value="PATCH" />-->
+        <!--            <el-option label="DELETE[删除资源]" value="DELETE" />-->
+        <!--          </el-select>-->
+        <!--        </el-form-item>-->
+        <!--        <el-form-item label="创建人">-->
+        <!--          <el-input v-model.trim="params.creator" clearable placeholder="创建人" @clear="search" />-->
+        <!--        </el-form-item>-->
+        <!--        <el-form-item>-->
+        <!--          <el-button :loading="loading" icon="el-icon-search" type="primary" @click="search">查询</el-button>-->
+        <!--        </el-form-item>-->
         <el-form-item>
           <el-button :loading="loading" icon="el-icon-plus" type="warning" @click="create">新增</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button :disabled="multipleSelection.length === 0" :loading="loading" icon="el-icon-delete" type="danger" @click="batchDelete">批量删除</el-button>
+          <el-button :disabled="multipleSelection.length === 0" :loading="loading" type="danger" @click="startTask">任务开始</el-button>
         </el-form-item>
       </el-form>
 
       <el-table v-loading="loading" :data="tableData" border stripe style="width: 100%" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column show-overflow-tooltip sortable prop="path" label="访问路径" />
-        <el-table-column show-overflow-tooltip sortable prop="category" label="所属类别" />
-        <el-table-column show-overflow-tooltip sortable prop="method" label="请求方式" align="center">
-          <template slot-scope="scope">
-            <el-tag size="small" :type="scope.row.method | methodTagFilter" disable-transitions>{{ scope.row.method }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column show-overflow-tooltip sortable prop="creator" label="创建人" />
-        <el-table-column show-overflow-tooltip sortable prop="desc" label="说明" />
-        <el-table-column fixed="right" label="操作" align="center" width="120">
-          <template slot-scope="scope">
-            <el-tooltip content="编辑" effect="dark" placement="top">
-              <el-button size="mini" icon="el-icon-edit" circle type="primary" @click="update(scope.row)" />
-            </el-tooltip>
-            <el-tooltip class="delete-popover" content="删除" effect="dark" placement="top">
-              <el-popconfirm title="确定删除吗？" @onConfirm="singleDelete(scope.row.ID)">
-                <el-button slot="reference" size="mini" icon="el-icon-delete" circle type="danger" />
-              </el-popconfirm>
-            </el-tooltip>
-          </template>
-        </el-table-column>
+        <el-table-column show-overflow-tooltip sortable prop="game_no" label="游戏编号" />
+        <el-table-column show-overflow-tooltip sortable prop="game_name" label="游戏名称" />
+        <el-table-column show-overflow-tooltip sortable prop="merchant_name" label="商户名称" /> <!--align="center">-->
+        <!--          <template slot-scope="scope">-->
+        <!--            <el-tag size="small" :type="scope.row.method | methodTagFilter" disable-transitions>{{ scope.row.method }}</el-tag>-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
+        <el-table-column show-overflow-tooltip sortable prop="merchant_no" label="商户编号" />
+        <el-table-column show-overflow-tooltip sortable prop="sku" label="商品编码" />
+        <el-table-column show-overflow-tooltip sortable prop="transaction_type" label="交易类型" />
+        <el-table-column show-overflow-tooltip sortable prop="buy_number" label="支付价格" />
+        <el-table-column show-overflow-tooltip sortable prop="buy_currency" label="支付币种" />
+        <el-table-column show-overflow-tooltip sortable prop="server_money" label="服务费" />
+        <el-table-column show-overflow-tooltip sortable prop="buy_method" label="支付方式" />
+        <el-table-column show-overflow-tooltip sortable prop="remarks" label="备注" />
+        <el-table-column show-overflow-tooltip sortable prop="order_count" label="订单数量" />
+        <!--        <el-table-column fixed="right" label="操作" align="center" width="120">-->
+        <!--          <template slot-scope="scope">-->
+        <!--            <el-tooltip content="任务开始" effect="dark" placement="top">-->
+        <!--              <el-button size="mini" icon="el-icon-edit" circle type="primary" @click="update(scope.row)" />-->
+        <!--            </el-tooltip>-->
+        <!--            <el-tooltip class="delete-popover" content="删除" effect="dark" placement="top">-->
+        <!--              <el-popconfirm title="确定删除吗？" @onConfirm="singleDelete(scope.row.ID)">-->
+        <!--                <el-button slot="reference" size="mini" icon="el-icon-delete" circle type="danger" />-->
+        <!--              </el-popconfirm>-->
+        <!--            </el-tooltip>-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
       </el-table>
 
       <el-pagination
@@ -70,23 +77,50 @@
 
       <el-dialog :title="dialogFormTitle" :visible.sync="dialogFormVisible">
         <el-form ref="dialogForm" size="small" :model="dialogFormData" :rules="dialogFormRules" label-width="120px">
-          <el-form-item label="访问路径" prop="path">
-            <el-input v-model.trim="dialogFormData.path" placeholder="访问路径" />
+          <el-form-item label="游戏编号" prop="game_no">
+            <el-input v-model.trim="dialogFormData.GameNo" placeholder="游戏编号" />
           </el-form-item>
-          <el-form-item label="所属类别" prop="category">
-            <el-input v-model.trim="dialogFormData.category" placeholder="所属类别" />
+          <el-form-item label="游戏名称" prop="game_name">
+            <el-input v-model.trim="dialogFormData.GameName" placeholder="游戏名称" />
           </el-form-item>
-          <el-form-item label="请求方式" prop="method">
-            <el-select v-model.trim="dialogFormData.method" placeholder="请选择请求方式">
-              <el-option label="GET[获取资源]" value="GET" />
-              <el-option label="POST[新增资源]" value="POST" />
-              <el-option label="PUT[全部更新]" value="PUT" />
-              <el-option label="PATCH[增量更新]" value="PATCH" />
-              <el-option label="DELETE[删除资源]" value="DELETE" />
-            </el-select>
+          <el-form-item label="商户编号" prop="merchant_no">
+            <el-input v-model.trim="dialogFormData.MerchantNo" placeholder="商户编号" />
           </el-form-item>
-          <el-form-item label="说明" prop="desc">
-            <el-input v-model.trim="dialogFormData.desc" type="textarea" placeholder="说明" show-word-limit maxlength="100" />
+          <el-form-item label="商户名称" prop="merchant_name">
+            <el-input v-model.trim="dialogFormData.MerchantName" placeholder="商户名称" />
+          </el-form-item>
+          <el-form-item label="商品编码" prop="sku">
+            <el-input v-model.trim="dialogFormData.ProductId" placeholder="商品编码" />
+          </el-form-item>
+          <el-form-item label="交易类型" prop="transaction_type">
+            <el-input v-model.trim="dialogFormData.TradeType" placeholder="交易类型" />
+          </el-form-item>
+          <el-form-item label="支付价格" prop="buy_number">
+            <el-input v-model.trim="dialogFormData.TradePriceCent" placeholder="支付价格" />
+          </el-form-item>
+          <el-form-item label="支付币种" prop="buy_currency">
+            <el-input v-model.trim="dialogFormData.Currency" placeholder="支付币种" />
+          </el-form-item>
+          <el-form-item label="服务费" prop="server_money">
+            <el-input v-model.trim="dialogFormData.ServiceFeeCent" placeholder="服务费" />
+          </el-form-item>
+          <el-form-item label="支付方式" prop="buy_method">
+            <el-input v-model.trim="dialogFormData.PayType" placeholder="支付方式" />
+          </el-form-item>
+          <el-form-item label="订单数量" prop="order_count">
+            <el-input v-model.trim="dialogFormData.Count" placeholder="订单数量" />
+          </el-form-item>
+          <!--          <el-form-item label="请求方式" prop="method">-->
+          <!--            <el-select v-model.trim="dialogFormData.method" placeholder="请选择请求方式">-->
+          <!--              <el-option label="GET[获取资源]" value="GET" />-->
+          <!--              <el-option label="POST[新增资源]" value="POST" />-->
+          <!--              <el-option label="PUT[全部更新]" value="PUT" />-->
+          <!--              <el-option label="PATCH[增量更新]" value="PATCH" />-->
+          <!--              <el-option label="DELETE[删除资源]" value="DELETE" />-->
+          <!--            </el-select>-->
+          <!--          </el-form-item>-->
+          <el-form-item label="备注" prop="remark">
+            <el-input v-model.trim="dialogFormData.Remarks" type="textarea" placeholder="备注" show-word-limit maxlength="100" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -143,25 +177,36 @@ export default {
       dialogType: '',
       dialogFormVisible: false,
       dialogFormData: {
-        path: '',
-        category: '',
-        method: '',
-        desc: ''
+        EndTime: '',
+        Count: '',
+        StartTime: '',
+        MerchantNo: '',
+        GameNo: '',
+        GameName: '',
+        TradeType: '',
+        ProductId: '',
+        MerchantName: '',
+        Currency: '',
+        TradePriceCent: '',
+        ServiceFeeCent: '',
+        PayType: '',
+        TradeTime: '',
+        Remarks: ''
       },
       dialogFormRules: {
-        path: [
-          { required: true, message: '请输入访问路径', trigger: 'blur' },
-          { min: 1, max: 100, message: '长度在 1 到 100 个字符', trigger: 'blur' }
+        EndTime: [
+          { required: true, message: '请选择结束时间', trigger: 'blur' }
+          // { min: 1, max: 100, message: '长度在 1 到 100 个字符', trigger: 'blur' }
         ],
-        category: [
-          { required: true, message: '请输入所属类别', trigger: 'blur' },
-          { min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur' }
+        Count: [
+          { required: true, message: '请输入任务数量', trigger: 'blur' },
+          { min: 1, max: 50, message: '最多每天900个任务', trigger: 'blur' }
         ],
-        method: [
-          { required: true, message: '请选择请求方式', trigger: 'change' }
+        StartTime: [
+          { required: true, message: '请选择开始时间', trigger: 'change' }
         ],
-        desc: [
-          { required: false, message: '说明', trigger: 'blur' },
+        MerchantNo: [
+          { required: false, message: '请输入商户编号', trigger: 'blur' },
           { min: 0, max: 100, message: '长度在 0 到 100 个字符', trigger: 'blur' }
         ]
       },
@@ -196,7 +241,7 @@ export default {
 
     // 新增
     create() {
-      this.dialogFormTitle = '新增接口'
+      this.dialogFormTitle = '新增任务'
       this.dialogType = 'create'
       this.dialogFormVisible = true
     },
@@ -209,7 +254,7 @@ export default {
       this.dialogFormData.method = row.method
       this.dialogFormData.desc = row.desc
 
-      this.dialogFormTitle = '修改接口'
+      this.dialogFormTitle = '修改任务'
       this.dialogType = 'update'
       this.dialogFormVisible = true
     },
