@@ -44,3 +44,12 @@ export function batchDeleteApiByIds(data) {
     data
   })
 }
+
+// 创建订单接口
+export function createOrder(data) {
+  return request({
+    url: '/api/order/createOrder',
+    method: 'post',
+    data
+  })
+}

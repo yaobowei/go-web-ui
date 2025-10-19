@@ -23,6 +23,19 @@
         <!--        <el-form-item>-->
         <!--          <el-button :loading="loading" icon="el-icon-search" type="primary" @click="search">查询</el-button>-->
         <!--        </el-form-item>-->
+        <el-form-item class="time-range-container">
+          <el-date-picker
+            v-model="dateRange"
+            type="daterange"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :picker-options="pickerOptions"
+            value-format="timestamp"
+            format="yyyy-MM-dd"
+            @change="handleRangeChange"
+          />
+        </el-form-item>
         <el-form-item>
           <el-button :loading="loading" icon="el-icon-plus" type="warning" @click="create">新增</el-button>
         </el-form-item>
@@ -33,22 +46,22 @@
 
       <el-table v-loading="loading" :data="tableData" border stripe style="width: 100%" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column show-overflow-tooltip sortable prop="game_no" label="游戏编号" />
-        <el-table-column show-overflow-tooltip sortable prop="game_name" label="游戏名称" />
-        <el-table-column show-overflow-tooltip sortable prop="merchant_name" label="商户名称" /> <!--align="center">-->
+        <el-table-column show-overflow-tooltip sortable prop="GameNo" label="游戏编号" />
+        <el-table-column show-overflow-tooltip sortable prop="GameName" label="游戏名称" />
+        <el-table-column show-overflow-tooltip sortable prop="MerchantName" label="商户名称" /> <!--align="center">-->
         <!--          <template slot-scope="scope">-->
         <!--            <el-tag size="small" :type="scope.row.method | methodTagFilter" disable-transitions>{{ scope.row.method }}</el-tag>-->
         <!--          </template>-->
         <!--        </el-table-column>-->
-        <el-table-column show-overflow-tooltip sortable prop="merchant_no" label="商户编号" />
-        <el-table-column show-overflow-tooltip sortable prop="sku" label="商品编码" />
-        <el-table-column show-overflow-tooltip sortable prop="transaction_type" label="交易类型" />
-        <el-table-column show-overflow-tooltip sortable prop="buy_number" label="支付价格" />
-        <el-table-column show-overflow-tooltip sortable prop="buy_currency" label="支付币种" />
-        <el-table-column show-overflow-tooltip sortable prop="server_money" label="服务费" />
-        <el-table-column show-overflow-tooltip sortable prop="buy_method" label="支付方式" />
-        <el-table-column show-overflow-tooltip sortable prop="remarks" label="备注" />
-        <el-table-column show-overflow-tooltip sortable prop="order_count" label="订单数量" />
+        <el-table-column show-overflow-tooltip sortable prop="MerchantNo" label="商户编号" />
+        <el-table-column show-overflow-tooltip sortable prop="ProductId" label="商品编码" />
+        <el-table-column show-overflow-tooltip sortable prop="TradeType" label="交易类型" />
+        <el-table-column show-overflow-tooltip sortable prop="TradePriceCent" label="支付价格" />
+        <el-table-column show-overflow-tooltip sortable prop="Currency" label="支付币种" />
+        <el-table-column show-overflow-tooltip sortable prop="ServiceFeeCent" label="服务费" />
+        <el-table-column show-overflow-tooltip sortable prop="PayType" label="支付方式" />
+        <el-table-column show-overflow-tooltip sortable prop="Remarks" label="备注" />
+        <el-table-column show-overflow-tooltip sortable prop="Count" label="订单数量" />
         <!--        <el-table-column fixed="right" label="操作" align="center" width="120">-->
         <!--          <template slot-scope="scope">-->
         <!--            <el-tooltip content="任务开始" effect="dark" placement="top">-->
@@ -77,37 +90,37 @@
 
       <el-dialog :title="dialogFormTitle" :visible.sync="dialogFormVisible">
         <el-form ref="dialogForm" size="small" :model="dialogFormData" :rules="dialogFormRules" label-width="120px">
-          <el-form-item label="游戏编号" prop="game_no">
+          <el-form-item label="游戏编号" prop="GameNo">
             <el-input v-model.trim="dialogFormData.GameNo" placeholder="游戏编号" />
           </el-form-item>
-          <el-form-item label="游戏名称" prop="game_name">
+          <el-form-item label="游戏名称" prop="GameName">
             <el-input v-model.trim="dialogFormData.GameName" placeholder="游戏名称" />
           </el-form-item>
-          <el-form-item label="商户编号" prop="merchant_no">
+          <el-form-item label="商户编号" prop="MerchantNo">
             <el-input v-model.trim="dialogFormData.MerchantNo" placeholder="商户编号" />
           </el-form-item>
-          <el-form-item label="商户名称" prop="merchant_name">
+          <el-form-item label="商户名称" prop="MerchantName">
             <el-input v-model.trim="dialogFormData.MerchantName" placeholder="商户名称" />
           </el-form-item>
-          <el-form-item label="商品编码" prop="sku">
+          <el-form-item label="商品编码" prop="ProductId">
             <el-input v-model.trim="dialogFormData.ProductId" placeholder="商品编码" />
           </el-form-item>
-          <el-form-item label="交易类型" prop="transaction_type">
+          <el-form-item label="交易类型" prop="TradeType">
             <el-input v-model.trim="dialogFormData.TradeType" placeholder="交易类型" />
           </el-form-item>
-          <el-form-item label="支付价格" prop="buy_number">
+          <el-form-item label="支付价格" prop="TradePriceCent">
             <el-input v-model.trim="dialogFormData.TradePriceCent" placeholder="支付价格" />
           </el-form-item>
-          <el-form-item label="支付币种" prop="buy_currency">
+          <el-form-item label="支付币种" prop="Currency">
             <el-input v-model.trim="dialogFormData.Currency" placeholder="支付币种" />
           </el-form-item>
-          <el-form-item label="服务费" prop="server_money">
+          <el-form-item label="服务费" prop="ServiceFeeCent">
             <el-input v-model.trim="dialogFormData.ServiceFeeCent" placeholder="服务费" />
           </el-form-item>
-          <el-form-item label="支付方式" prop="buy_method">
+          <el-form-item label="支付方式" prop="PayType">
             <el-input v-model.trim="dialogFormData.PayType" placeholder="支付方式" />
           </el-form-item>
-          <el-form-item label="订单数量" prop="order_count">
+          <el-form-item label="订单数量" prop="Count">
             <el-input v-model.trim="dialogFormData.Count" placeholder="订单数量" />
           </el-form-item>
           <!--          <el-form-item label="请求方式" prop="method">-->
@@ -119,7 +132,7 @@
           <!--              <el-option label="DELETE[删除资源]" value="DELETE" />-->
           <!--            </el-select>-->
           <!--          </el-form-item>-->
-          <el-form-item label="备注" prop="remark">
+          <el-form-item label="备注" prop="Remarks">
             <el-input v-model.trim="dialogFormData.Remarks" type="textarea" placeholder="备注" show-word-limit maxlength="100" />
           </el-form-item>
         </el-form>
@@ -134,7 +147,7 @@
 </template>
 
 <script>
-import { getApis, createApi, updateApiById, batchDeleteApiByIds } from '@/api/system/api'
+import { getApis, updateApiById, batchDeleteApiByIds, createOrder } from '@/api/system/api'
 
 export default {
   name: 'Api',
@@ -166,20 +179,23 @@ export default {
         pageNum: 1,
         pageSize: 10
       },
+      dateRange: [],
+      pickerOptions: {
+        disabledDate(time) { return time.getTime() < Date.now() - 8.64e7 }
+      },
       // 表格数据
       tableData: [],
       total: 0,
       loading: false,
-
+      startTime: Date.now(),
+      endTime: Date.now(),
       // dialog对话框
       submitLoading: false,
       dialogFormTitle: '',
       dialogType: '',
       dialogFormVisible: false,
       dialogFormData: {
-        EndTime: '',
         Count: '',
-        StartTime: '',
         MerchantNo: '',
         GameNo: '',
         GameName: '',
@@ -218,13 +234,15 @@ export default {
     }
   },
   created() {
-    this.getTableData()
+    this.getData()
+    // this.getTableData()
   },
   methods: {
     // 查询
     search() {
-      this.params.pageNum = 1
-      this.getTableData()
+      // this.params.pageNum = 1
+      // this.getTableData()
+      this.getData()
     },
 
     // 获取表格数据
@@ -236,6 +254,58 @@ export default {
         this.total = data.total
       } finally {
         this.loading = false
+      }
+    },
+
+    // 从本地获取缓存数据
+    getData() {
+      const orderData = JSON.parse(localStorage.getItem('orderInfo'))
+      if (orderData !== null) {
+        console.log(orderData)
+        this.tableData = orderData.tableData
+      } else {
+        this.tableData = []
+      }
+      console.log(this.tableData)
+    },
+
+    handleRangeChange(val) {
+      if (val && val.length === 2) {
+        const [startTimestamp, endTimestamp] = val
+        this.startTime = startTimestamp
+        this.endTime = endTimestamp
+      }
+    },
+
+    // 将数据保存到本地
+    saveData(dialogFormData) {
+      if (this.tableData === null) this.tableData = []
+      this.tableData.push(dialogFormData)
+      this.orderData = {
+        startTime: this.startTime,
+        endTime: this.endTime,
+        tableData: this.tableData
+      }
+      // this.tableData.push(dialogFormData)
+      localStorage.setItem('orderInfo', JSON.stringify(this.orderData))
+    },
+
+    async startTask() {
+      if (this.endTime <= this.startTime) {
+        return
+      }
+      this.orderData = {
+        startTime: this.startTime,
+        endTime: this.endTime,
+        data: this.tableData
+      }
+      const { message } = await createOrder(this.orderData)
+      if (message) {
+        // eslint-disable-next-line no-undef
+        // showPopup({
+        //   content: '任务创建成功',
+        //   type: 'success'
+        // })
       }
     },
 
@@ -267,8 +337,9 @@ export default {
           this.submitLoading = true
           try {
             if (this.dialogType === 'create') {
-              const { message } = await createApi(this.dialogFormData)
-              msg = message
+              // const { message } = await createApi(this.dialogFormData)
+              // msg = message
+              this.saveData(this.dialogFormData)
             } else {
               const { message } = await updateApiById(this.dialogFormData.ID, this.dialogFormData)
               msg = message
@@ -278,7 +349,8 @@ export default {
           }
 
           this.resetForm()
-          this.getTableData()
+          // this.getTableData()
+          this.getData()
           this.$message({
             showClose: true,
             message: msg,
@@ -331,7 +403,8 @@ export default {
           this.loading = false
         }
 
-        this.getTableData()
+        // this.getTableData()
+        this.getData()
         this.$message({
           showClose: true,
           message: msg,
@@ -362,7 +435,8 @@ export default {
         this.loading = false
       }
 
-      this.getTableData()
+      // this.getTableData()
+      this.getData()
       this.$message({
         showClose: true,
         message: msg,
@@ -373,11 +447,13 @@ export default {
     // 分页
     handleSizeChange(val) {
       this.params.pageSize = val
-      this.getTableData()
+      // this.getTableData()
+      this.getData()
     },
     handleCurrentChange(val) {
       this.params.pageNum = val
-      this.getTableData()
+      // this.getTableData()
+      this.getData()
     }
   }
 }
@@ -390,5 +466,11 @@ export default {
 
   .delete-popover{
     margin-left: 10px;
+  }
+
+  .time-range-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
   }
 </style>
