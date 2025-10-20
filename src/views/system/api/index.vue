@@ -55,6 +55,7 @@
         <!--        </el-table-column>-->
         <el-table-column show-overflow-tooltip sortable prop="MerchantNo" label="商户编号" />
         <el-table-column show-overflow-tooltip sortable prop="ProductId" label="商品编码" />
+        <el-table-column show-overflow-tooltip sortable prop="ProductName" label="商品名称" />
         <el-table-column show-overflow-tooltip sortable prop="TradeType" label="交易类型" />
         <el-table-column show-overflow-tooltip sortable prop="TradePriceCent" label="支付价格" />
         <el-table-column show-overflow-tooltip sortable prop="Currency" label="支付币种" />
@@ -105,6 +106,9 @@
           <el-form-item label="商品编码" prop="ProductId">
             <el-input v-model.trim="dialogFormData.ProductId" placeholder="商品编码" />
           </el-form-item>
+          <el-form-item label="商品名称" prop="ProductName">
+            <el-input v-model.trim="dialogFormData.ProductName" placeholder="商品名称" />
+          </el-form-item>
           <el-form-item label="交易类型" prop="TradeType">
             <el-input v-model.trim="dialogFormData.TradeType" placeholder="交易类型" />
           </el-form-item>
@@ -141,16 +145,18 @@
           <el-button size="mini" :loading="submitLoading" type="primary" @click="submitForm()">确 定</el-button>
         </div>
       </el-dialog>
-
+      <Toast ref="toast" />
     </el-card>
   </div>
 </template>
 
 <script>
 import { getApis, updateApiById, batchDeleteApiByIds, createOrder } from '@/api/system/api'
+import Toast from '@/components/Toast/Toast.vue'
 
 export default {
   name: 'Api',
+  components: { Toast },
   filters: {
     methodTagFilter(val) {
       if (val === 'GET') {
@@ -201,6 +207,7 @@ export default {
         GameName: '',
         TradeType: '',
         ProductId: '',
+        ProductName: '',
         MerchantName: '',
         Currency: '',
         TradePriceCent: '',
@@ -292,6 +299,7 @@ export default {
 
     async startTask() {
       if (this.endTime <= this.startTime) {
+        this.$refs.toast.show('请选择时间')
         return
       }
       this.orderData = {
@@ -306,6 +314,7 @@ export default {
         //   content: '任务创建成功',
         //   type: 'success'
         // })
+        this.$refs.toast.show('任务创建成功')
       }
     },
 
