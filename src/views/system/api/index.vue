@@ -213,7 +213,6 @@ export default {
         TradePriceCent: '',
         ServiceFeeCent: '',
         PayType: '',
-        TradeTime: '',
         Remarks: ''
       },
       dialogFormRules: {
